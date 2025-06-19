@@ -18,8 +18,29 @@ namespace Task.Core.Features.Products.Command.Handler
         }
         public async Task<Response<string>> Handle(AddNewProductCommand request, CancellationToken cancellationToken)
         {
+            string imageUrl = null;
+            if (request.Image != null && request.Image.Length > 0)
+            {
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(request.Image.FileName);
+                var fullPath = Path.Combine(folderPath, fileName);
+
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    await request.Image.CopyToAsync(stream);
+                }
+
+                imageUrl = $"/Uploads/{fileName}";
+            }
             // After Validation Map From command To Real Product 
             var Product = _mapper.Map<Product>(request);
+            Product.Image = imageUrl;
+
             //add to DB
             var result = await _productServices.AddProductAsync(Product);
             if (result != "Success")

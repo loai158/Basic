@@ -17,9 +17,6 @@
     <Folder Include="Features\Authentication\Query\Models\" />
     <Folder Include="Features\Authentication\Query\Responses\" />
     <Folder Include="Features\Categories\Query\" />
-    <Folder Include="Features\Products\Query\Hadler\" />
-    <Folder Include="Features\Products\Query\Models\" />
-    <Folder Include="Features\Products\Query\Responses\" />
   </ItemGroup>
 
   <ItemGroup>

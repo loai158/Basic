@@ -38,7 +38,7 @@ namespace Task.Api.Controllers
 
             return BadRequest(response);
         }
-        [HttpGet("Get-All")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var userId = GetUserId();

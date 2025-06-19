@@ -1,17 +1,13 @@
-﻿namespace Task.Data.Models.App
+﻿namespace Task.Core.Features.Products.Query.Responses
 {
-    public class Product
+    public class GetAllProductsResponse
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
+        public string CategoryName { get; set; }
         public string Image { get; set; }
 
-        // Foreign Key
-        public int CategoryId { get; set; }
-
-        // Navigation properties
-        public Category Category { get; set; }
     }
 }

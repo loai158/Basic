@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Task.Core.ResponseWrapper;
 
 namespace Task.Core.Features.Products.Command.Models
@@ -9,5 +10,6 @@ namespace Task.Core.Features.Products.Command.Models
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public int CategoryId { get; set; }
+        public IFormFile Image { get; set; }
     }
 }

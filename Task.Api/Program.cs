@@ -1,7 +1,8 @@
-
+﻿
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -107,9 +108,10 @@ namespace Task.Api
                 Options.AddPolicy(name: CORS,
                     policy =>
                     {
-                        policy.AllowAnyHeader();
-                        policy.AllowAnyMethod();
-                        policy.AllowAnyOrigin();
+                        policy.WithOrigins("http://localhost:3000") // الريأكت شغال على البورت دا
+                       .AllowAnyHeader()
+                       .AllowAnyMethod()
+                       .AllowCredentials();
                     });
             });
             #region Dependency Injection
@@ -137,6 +139,12 @@ namespace Task.Api
                 app.UseSwaggerUI();
             }
             app.UseMiddleware<ExceptionHandlingMiddleware>();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+         Path.Combine(Directory.GetCurrentDirectory(), "Uploads")),
+                RequestPath = "/Uploads"
+            });
 
             app.UseHttpsRedirection();
             app.UseCors(CORS);

@@ -4,5 +4,6 @@ namespace Task.Services.Abstracts
     public interface IProductServices
     {
         public Task<String> AddProductAsync(Product product);
+        public Task<IEnumerable<Product>> GeAllAsync();
     }
 }
