@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Task.Core;
+using Task.Core.Hubs;
 using Task.Core.Middlewares;
 using Task.Data.Helpers;
 using Task.Data.Models.Identity;
@@ -31,6 +32,10 @@ namespace Task.Api
             //Map between AppSettings => HelperClasss
 
             builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
+            //Email 
+            builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+            //signalR
+            builder.Services.AddSignalR();
 
             // Connection to SQL Server
             builder.Services.AddDbContext<ApplicationDbContext>(option =>
@@ -72,6 +77,21 @@ namespace Task.Api
                     ValidAudience = builder.Configuration["JWT:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
                     ClockSkew = TimeSpan.Zero
+                };
+                o.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            path.StartsWithSegments("/hub/notifications"))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return System.Threading.Tasks.Task.CompletedTask;
+                    }
                 };
             });
             //Edit Swagger
@@ -132,6 +152,8 @@ namespace Task.Api
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                 await DbInitializer.SeedRolesAsync(roleManager);
             }
+            app.MapHub<NotificationHub>("/hub/notifications");
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

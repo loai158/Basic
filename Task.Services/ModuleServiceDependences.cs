@@ -11,6 +11,8 @@ namespace Task.Services
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IProductServices, ProductServices>();
             services.AddScoped<ICategoryServices, CategoryServices>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IUserServices, UserServices>();
             services.AddScoped<IOrderServices, OrderServices>();
 
             return services;
